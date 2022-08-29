@@ -62,6 +62,13 @@ while run:
             run = False
             break
 
+    keys = pygame.key.get_pressed()
+
+    if keys[pygame.K_LEFT]:
+        player_car.rotate(left=True)
+    if keys[pygame.K_RIGHT]:
+        player_car.rotate(right=True)
+
 pygame.quit()
 
 
