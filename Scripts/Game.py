@@ -8,7 +8,7 @@ pygame.init()
 
 TRACK = pygame.image.load("GameAssets/AltBackground2.png")
 GREEN_CAR = scale_image(pygame.image.load("GameAssets/car_green_3.png"), 0.45)
-ORANGE_CAR = scale_image(pygame.image.load("GameAssets/orange-car-top-view.png"), 0.07)
+ORANGE_CAR = scale_image(pygame.image.load("GameAssets/orange-car-top-view.png"), 0.08)
 
 WIDTH, HEIGHT = TRACK.get_width(), TRACK.get_height()
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -25,6 +25,7 @@ class AbstractCar:
         self.rotation_vel = rotation_vel
         self.angle = 0
         self.x, self.y = self.START_POS
+        self.acceleration = 0.1
 
     def rotate(self, left=False, right=False):
         if left:
@@ -34,6 +35,22 @@ class AbstractCar:
 
     def draw(self,win):
         blit_rotate_center(win, self.img, (self.x, self.y), self.angle)
+
+    def move_forward(self):
+        self.vel = min(self.vel + self.acceleration, self.max_vel)
+        self.move()
+
+    def move(self):
+        radians = math.radians(self.angle)
+        vertical = math.cos(radians) * self.vel
+        horizontal = math.sin(radians) * self.vel
+
+        self.y -= vertical
+        self.x -= horizontal
+
+    def reduce_speed(self):
+        self.vel = max(self.vel - self.acceleration/2, 0)
+        self.move()
 
 class PlayerCar(AbstractCar):
     IMG = ORANGE_CAR
@@ -63,11 +80,18 @@ while run:
             break
 
     keys = pygame.key.get_pressed()
+    moved = False
 
     if keys[pygame.K_LEFT]:
         player_car.rotate(left=True)
     if keys[pygame.K_RIGHT]:
         player_car.rotate(right=True)
+    if keys[pygame.K_UP]:
+        moved = True
+        player_car.move_forward()
+
+    if not moved:
+        player_car.reduce_speed()
 
 pygame.quit()
 
