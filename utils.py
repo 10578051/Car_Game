@@ -9,3 +9,4 @@ def blit_rotate_center(win, image, top_Left, angle):
     new_rect = rotated_image.get_rect(center=image.get_rect(topleft = top_Left).center)
     win.blit(rotated_image, new_rect.topleft)
 
+#Source of the above code https://www.youtube.com/watch?v=L3ktUWfAMPg&t=1267s&ab_channel=TechWithTim
